@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+ <HEAD>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+    <link rel="stylesheet" type="text/css" media="all" href="Css/site.css">
+ </HEAD>
+ <BODY bgcolor="#FFFFFF">
+	<div style="margin:20px;">
+    <h1 class="center_div">Breakdown of SquaresJS:</h1><br/>
+
+	<div class="text_block">SquaresJS is a library that allows for tile based animations of images or videos. It has no other JS dependencies but requires canvas support from the browser. A quick glance at squarepresets.js will allow you to see how a Squares.Animation object can be created and used.</div>
+	
+	<div class="center_div">
+		<h2>Examples</h2>
+		<a href="image.html">Image example</a><br/><br/>
+		<a href="video.html">Video example</a><br/></br/>
+	</div>
+	
+	<h2 class="center_div">How It Works</h2>
+	
+	<div class="text_block">
+		<p>The core concept is that the Animation object breaks up the image or video into tiles. I'll go through how to setup an animation by what
+		the variables mean.<p>
+	
+		<p><b>rows</b> - The number of rows in the animation.<br/>
+		<b>cols</b> - The number of columns in the animation.<br/>
+		<b>growDirection</b> - Determine how to generate the 2D matrix to be processed by the algorithm. The types of directions are
+		horizontal, vertical, diagonal, and checker.</p>
+		
+		<p>The number of rows and the number of columns are really important in terms of the <i>GrowDirection</i>. Depending on which one these you pick, the algorithm will generate a 2D Matrix (called positions) of to be processed. For example, if you pick horizontal, each array in the matrix will be a row, while if you pick diagonal, each array in the matrix will be a diagonal slice of tiles. When I refer to a "row" further in this guide, I mean a row in the positions matrix.</p>
+		
+		<p><b>squareSteps</b> -The amount of frames each tile animation goes through before completion.<br/>
+		<b>growDelay</b> - The amount of frames to delay before "growing" the next stage of the overall animation<br/>
+		<b>growFactor</b> - Determine how to add new tiles for each new row. For example, we can add them one at a time (linear), all at once (row), from the outside in (centerin), or from the inside out (centerout).<br/>
+		<b>growType</b> - Determine how to add each new row. The linear, centerin, and centerout options are the same as growFactor. We also have random and all.</p>
+	
+		<p>By changing the squareSteps, growDelay, growFactor, and growType, we have a large amount of flexibility in how the positions matrix is drawn to the screen throughout the animation. Note, there is no random value for growFactor, but there is a special case combining growFactor.linear and growType.random which will randomly draw the individual tiles in the positions matrix.</p>
+			
+		<p><b>effects</b> - Pass in an array of effects to be applied to each tile as it is drawn. The current effects are FadingEffect, GrowingEffect, ZoomingEffect, FlashingEffect, and RotatingEffect.</p>
+			
+		<p>These effects work as transforms on each tile as it is drawn. Since they work that way, they can all be combined. Some of the effects have further options - such as how many rotations we want to do for rotatingEffect or what direction to zoom in for ZoomingEffect.</p>
+		
+		<p><b>link</b> - The url to load the image for the animation from. If passed in as an array - it will assume it is a video.<br/>
+		<b>canvas</b> - The canvas object to operate on.</p>
+		
+		<p>The link and canvas elements are just wiring variables. The links to what you what the animation to draw and the canvas to draw it on.</p>
+		
+		<p><b>adjustForGhostLines</b> - Overdraw each tile by 1px.</br>
+		<b>finished</b> - A function to be called when the animation is complete</p>
+		
+		<p>The adjustForGhostLines property is an unfortunate requirement for some browsers. Some browsers will round off rendering of the tiles creating lines between the tiles. This gives the animation an ugly look. By overdrawing each animation by 1px, we can remove the lines and it looks better. Unfortunately, this still creates a small visual distortion at the end when the animation is done. The finished variable is self-explanatory.</p>
+	</div>
+	
+	<h2 class="center_div">Future Work</h2>
+	
+	<div class="text_block">
+		<p><b>Accurate timing of animations</b> - Currently there are no options for precise timing. I found that using window.requestAnimationFrame to 
+		draw the animation significantly improved performance over trying to set a timeout myself. To have accurate timing, a function to determine the amount of steps in an animation is required, a self-adjusting timer would need to be created to adjust the delay in the timeout calls, and a significant amount of optimization would need to be done to allow for a smooth animation.<br/><br/>
+		
+		<b>More effects</b> - Would definitely be interested in any ideas here.<br/><br/>
+		
+		<b>Performance optimization and code cleanup</b> - I'm sure the javascript could be written better.</p>
+		<br/><br/><br/><br/>
+	</div>
+	
+ </BODY>
+</HTML>

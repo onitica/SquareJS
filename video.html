@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+ <HEAD>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+    <link rel="stylesheet" type="text/css" media="all" href="Css/site.css">
+	<script type="text/javascript" src="squares.js"></script>
+	<script type="text/javascript" src="squarepresets.js"></script>
+	<script type="text/javascript">	
+	  var videoArray = [['Videos/01.mp4','Videos/01.webm'],
+						['Videos/02.mp4', 'Videos/02.webm', 'Videos/02.ogv'],
+						['Videos/03.mp4', 'Videos/03.webm', 'Videos/03.ogv']]					
+	  
+	  var effectsArray = ['checkers','fadeoutcenter', 'jumble', 'progressbar', 'slidingdown', 'spinners', 'whackamole'];
+		
+	   window.onload = function() {
+	   SquarePresets.createGallery('canvasDiv', videoArray, effectsArray);
+	  }
+	</script>
+ </HEAD>
+ <BODY bgcolor="#FFFFFF">
+	<br/>
+    <h1 style="text-align:center;margin:0px auto;">Video Example:</h1>
+	<div style="height:500px;width:600px;margin:0px auto;margin-top: 50px;" id="canvasDiv"></div>
+ </BODY>
+</HTML>
