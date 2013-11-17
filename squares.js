@@ -378,7 +378,8 @@
 	}
 
 	Animation.prototype.drawVideo = function(v,buffer) {
-	    if(v.paused || v.ended || this.stopped) return false;
+	    if(buffer.stopped) v.pause();
+		if(v.paused || v.ended) return false;
 	    buffer.videoContext.drawImage(v,0,0,buffer.videoCanvas.width,buffer.videoCanvas.height);
 	    setTimeout(buffer.drawVideo,60,v,buffer);
 	}
