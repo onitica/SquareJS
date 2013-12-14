@@ -4,8 +4,8 @@
 		//Remove elements in array [from, to]
 		function remove(array, from, to) {
 			var rest = array.slice((to || from) + 1 || array.length);
-		  	array.length = from < 0 ? array.length + from : from;
-		  	return array.push.apply(array, rest);
+			array.length = from < 0 ? array.length + from : from;
+			return array.push.apply(array, rest);
 		}
 		
 		//Pop a random element in a 1D array
@@ -78,10 +78,10 @@
 	})();
 
 	function merge(obj1,obj2){
-	    var obj3 = {};
-	    for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-	    for (var attrname in obj2) { if(obj2[attrname] != undefined) obj3[attrname] = obj2[attrname]; }
-	    return obj3;
+		var obj3 = {};
+		for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+		for (var attrname in obj2) { if(obj2[attrname] != undefined) obj3[attrname] = obj2[attrname]; }
+		return obj3;
 	}
 	
 	function deepCopyArray(matrix) {
@@ -98,7 +98,7 @@
 	var TO_RADIANS = Math.PI/180;
 	//requestAnimationFrame
 	var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-	                            window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+								window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 	//Direction from which pieces zoom in from.
 	//random means a random direction, random2 means random anywhere off the screen
 	var ZoomDirection = { left: 1, top: 2, right: 3, bottom: 4, random: 5, random2: 6 }
@@ -235,10 +235,10 @@
 							else this.startX = parent.cwidth + parent.cX;
 						} else {
 							this.startX = this.parent.cwidth * rand2;
-						    xchosen = true;
+							xchosen = true;
 						}
 						break;
-	 			    default:
+					default:
 						this.startX = 0;
 					}
 				switch(growth) {
@@ -263,7 +263,7 @@
 							this.startY = this.parent.cheight * rand;
 						}
 						break;
-				    default:
+					default:
 						this.startY = 0;
 				}
 			}
@@ -300,7 +300,7 @@
 			this.videoContext = this.videoCanvas.getContext('2d');
 			this.video.addEventListener('play', function(e){
 				that.drawVideo(this,that);
-		    },false);
+			},false);
 			this.video.addEventListener('canplay', function(e) {
 				document.body.appendChild(that.video);
 				that.iX = this.videoWidth/options.cols;
@@ -368,8 +368,8 @@
 			   var canPlayMP4 = this.video.canPlayType && this.video.canPlayType('video/mp4').replace(/no/, '');
 				if(!(options.link[i].indexOf(".mp4") != -1 && !canPlayMP4)) {
 					var source = document.createElement('source');
-			    	source.src = options.link[i];
-			    	this.video.appendChild(source);
+					source.src = options.link[i];
+					this.video.appendChild(source);
 				}
 			}
 		} else {
@@ -378,10 +378,10 @@
 	}
 
 	Animation.prototype.drawVideo = function(v,buffer) {
-	    if(buffer.stopped) v.pause();
+		if(buffer.stopped) v.pause();
 		if(v.paused || v.ended) return false;
-	    buffer.videoContext.drawImage(v,0,0,buffer.videoCanvas.width,buffer.videoCanvas.height);
-	    setTimeout(buffer.drawVideo,60,v,buffer);
+		buffer.videoContext.drawImage(v,0,0,buffer.videoCanvas.width,buffer.videoCanvas.height);
+		setTimeout(buffer.drawVideo,60,v,buffer);
 	}
 
 	//For video have secondary buffer that elements get placed in after removed and drawn as well
@@ -443,22 +443,22 @@
 			case GrowDirection.diagonal:
 				for(i = 0; i < this.colCount + this.rowCount - 1; i++) {
 					var z1 = i < this.rowCount ? 0 : i - this.rowCount + 1;
-			        var z2 = i < this.colCount ? 0 : i - this.colCount + 1;
+					var z2 = i < this.colCount ? 0 : i - this.colCount + 1;
 					var inner = [];
 					for (j = i - z2; j >= z1; --j) {
 						inner.push([j, i - j]);
-			        }
+					}
 					positions.push(inner);
 				}
 				break;
 			case GrowDirection.checker:
 			for(i = 0; i < this.colCount + this.rowCount - 1; i++) {
 				var z1 = i < this.rowCount ? 0 : i - this.rowCount + 1;
-		        var z2 = i < this.colCount ? 0 : i - this.colCount + 1;
+				var z2 = i < this.colCount ? 0 : i - this.colCount + 1;
 				var inner = [];
 				for (j = i - z2; j >= z1; --j) {
 					inner.push([j, i - j]);
-		        }
+				}
 				positions.push(inner);
 				positions = positions.reverse();
 			}
@@ -550,7 +550,7 @@
 			case GrowFactor.centerin:
 				if(!this.getRows()) return;
 
-		    	this.rows.forEach(function (element, index, array) {
+				this.rows.forEach(function (element, index, array) {
 					var row = element;
 					buffer.pushSquareToBuffer(element.shift());
 					switch(element.length) {
@@ -586,7 +586,7 @@
 	
 	Animation.prototype.drawImageAnim = function() {
 		if(!this.stopped) {
-		    var that = this;
+			var that = this;
 
 			if(this.growStep == this.growDelay) {
 				if(!this.posfinished) this.grow();

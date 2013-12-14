@@ -152,7 +152,7 @@
 			growType : Squares.GrowType.centerout,
 			effects : [[Squares.FadingEffect]],
 			squareSteps : 25,
-			finished : finished	
+			finished : finished 
 		},
 		jumble : {
 			growDelay : 2,
