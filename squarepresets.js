@@ -1,4 +1,6 @@
 ;var SquarePresets = (function(Squares) {
+	"use strict";
+	
 	var LOG = false;
 	
 	function gen(type, canvas, link, size) {

@@ -1,4 +1,6 @@
 ;var Squares = (function(window, document) {
+	"use strict";
+	
 	//Utility classes
 	var ArrayUtils = (function() {
 		//Remove elements in array [from, to]
@@ -421,6 +423,7 @@
 	//We can then calculate rows, random, and different growth strategies using these precomputed values
 	Animation.prototype.initPos = function() {
 		var positions = [];
+		var i, j;
 		switch(this.gdirection) {
 			case GrowDirection.horizontal:
 				for(i = 0; i < this.rowCount; i++) {
@@ -520,7 +523,7 @@
 				if(!this.getRows()) return;
 		
 				this.rows.forEach(function (element, index, array) {
-					for(i = 0; i < element.length; i++) {
+					for(var i = 0; i < element.length; i++) {
 						buffer.pushSquareToBuffer(element[i]);
 					}
 					ArrayUtils.remove(array, index);
