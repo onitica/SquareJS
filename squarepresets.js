@@ -1,4 +1,6 @@
 ;var SquarePresets = (function(Squares) {
+	"use strict";
+	
 	var LOG = false;
 	
 	function gen(type, canvas, link, size) {
@@ -152,7 +154,7 @@
 			growType : Squares.GrowType.centerout,
 			effects : [[Squares.FadingEffect]],
 			squareSteps : 25,
-			finished : finished	
+			finished : finished 
 		},
 		jumble : {
 			growDelay : 2,
