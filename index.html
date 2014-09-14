@@ -4,64 +4,169 @@
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
     <link rel="stylesheet" type="text/css" media="all" href="Css/site.css">
+
+	<!--
+	  Welcome to the source code. The following code in the header, and a div id is all you really need to run SquaresJS.
+	  This is the div element in this case: 
+	  <div style="height:500px;width:600px;margin:0px auto;margin-top:10px;" id="canvasDiv"></div> 
+	-->
+	
+	<link rel="stylesheet" type="text/css" media="all" href="Css/squaresgallery.css">
+	<script type="text/javascript" src="squares.js"></script>
+	<script type="text/javascript" src="squaresgallery.js"></script>
+	<script type="text/javascript">	
+	 // Object to generate gallery with
+	 var Gallery = {
+		// Set to true to see text inserted above the canvas
+		// The text can be styled by changing the css in squaresgallery.css
+		textHeader : false, 
+		// An array of objects containing the image, the effect to apply, and (if enabled) the text to display above the canvas 
+		values : [ 
+			{
+				image  : 'Images/01.jpg',
+				effect : 'checkers',
+				text   : 'Checkers Effect'
+			},
+			{
+				image  : 'Images/02.jpg',
+				effect : 'fadeoutcenter',
+				text   : 'Fade Out Center Effect'
+			},
+			{
+				image  : 'Images/03.jpg',
+				effect : 'jumble',
+				text   : 'Jumble Effect'
+			},
+			{
+				image  : 'Images/04.jpg',
+				effect : 'progressbar',
+				text   : 'Progress Bar Effect'
+			},
+			{
+				image  : 'Images/05.jpg',
+				effect : 'slidingdown',
+				text   : 'Sliding Down Effect'
+			},
+			{
+				image  : 'Images/06.jpg',
+				effect : 'spinners',
+				text   : 'Spinners Effect'
+			},
+			{
+				image  : 'Images/07.jpg',
+				effect : 'whackamole',
+				text   : 'Whackamole Effect'
+			}
+		]
+	 };
+	
+		window.onload = function() {
+			// Actually create the gallery
+			// 'canvasDiv' is an div element id	
+			SquarePresets.createGallery('canvasDiv', Gallery);
+		}
+	</script>
+	<!--
+	  END EXAMPLE
+	 -->
  </HEAD>
  <BODY bgcolor="#FFFFFF">
 	<div style="margin:20px;">
-    <h1 class="center_div">Breakdown of SquaresJS:</h1><br/>
+    <h1 class="center_div">SquaresJS</h1><hr><br>
 
-	<div class="text_block">SquaresJS is a library that allows for tile based animations of images or videos. It has no other JS dependencies but requires canvas support from the browser. A quick glance at squarepresets.js will allow you to see how a Squares.Animation object can be created and used.</div>
+	<div style="height:500px;width:600px;margin:0px auto;margin-top:10px;" id="canvasDiv"></div>
+	<br><hr>
 	
-	<div class="center_div">
-		<h2>Examples</h2>
-		<a href="image.html">Image example</a><br/><br/>
-		<a href="video.html">Video example</a><br/></br/>
-	</div>
-	
-	<h2 class="center_div">How It Works</h2>
+	<h2 class="center_div">The Lowdown</h2>
 	
 	<div class="text_block">
-		<p>The core concept is that the Animation object breaks up the image or video into tiles. I'll go through how to setup an animation by what
-		the variables mean.<p>
+		<p><span class="emphasize">SquaresJS</span> is a javascript library that allows for tile based animations of images or videos into a canvas. It has no other JS dependencies but requires canvas support from the browser. The gallery above is created using the library.</p>
+		
+		<p>To understand SquaresJS, there are several core concepts to go over. The most basic is creating and setting up a <span class="emphasize">gallery</span>. The <span class="emphasize">gallery</span> is end product we can interact with above. The next is creating your own <span class="emphasize">animations</span> and tweaking the existing <span class="emphasize">effects</span>. An <span class="emphasize">animation</span> is the javascript object we create that draws the image on the canvas, while an <span class="emphasize">effect</span> is a type of graphic transformation we do to a tile in the animation.<p>
 	
-		<p><b>rows</b> - The number of rows in the animation.<br/>
-		<b>cols</b> - The number of columns in the animation.<br/>
-		<b>growDirection</b> - Determine how to generate the 2D matrix to be processed by the algorithm. The types of directions are
-		horizontal, vertical, diagonal, and checker.</p>
-		
-		<p>The number of rows and the number of columns are really important in terms of the <i>GrowDirection</i>. Depending on which one these you pick, the algorithm will generate a 2D Matrix (called positions) of to be processed. For example, if you pick horizontal, each array in the matrix will be a row, while if you pick diagonal, each array in the matrix will be a diagonal slice of tiles. When I refer to a "row" further in this guide, I mean a row in the positions matrix.</p>
-		
-		<p><b>squareSteps</b> -The amount of frames each tile animation goes through before completion.<br/>
-		<b>growDelay</b> - The amount of frames to delay before "growing" the next stage of the overall animation<br/>
-		<b>growFactor</b> - Determine how to add new tiles for each new row. For example, we can add them one at a time (linear), all at once (row), from the outside in (centerin), or from the inside out (centerout).<br/>
-		<b>growType</b> - Determine how to add each new row. The linear, centerin, and centerout options are the same as growFactor. We also have random and all.</p>
+	<h3>Creating a Gallery</h3>
 	
-		<p>By changing the squareSteps, growDelay, growFactor, and growType, we have a large amount of flexibility in how the positions matrix is drawn to the screen throughout the animation. Note, there is no random value for growFactor, but there is a special case combining growFactor.linear and growType.random which will randomly draw the individual tiles in the positions matrix.</p>
-			
-		<p><b>effects</b> - Pass in an array of effects to be applied to each tile as it is drawn. The current effects are FadingEffect, GrowingEffect, ZoomingEffect, FlashingEffect, and RotatingEffect.</p>
-			
-		<p>These effects work as transforms on each tile as it is drawn. Since they work that way, they can all be combined. Some of the effects have further options - such as how many rotations we want to do for rotatingEffect or what direction to zoom in for ZoomingEffect.</p>
+	<p>Creating a gallery is quite easy. The gallery creation takes an object describing the slides in the gallery, and a div id where to put the gallery. The gallery will automatically fill the size of the div. Here is a simple example with only 2 elements in the gallery: </p>
+	
+	<div class="code">
+		<pre>
+&lt;--  The hrefs may need to be changed to where you are hosting the files... --&gt;
+&lt;link rel="stylesheet" type="text/css" media="all" href="squaresgallery.css"&gt;&lt;/link&gt;
+&lt;script type="text/javascript" src="squares.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="squaresgallery.js"&gt;&lt;/script&gt;
 		
-		<p><b>link</b> - The url to load the image for the animation from. If passed in as an array - it will assume it is a video.<br/>
-		<b>canvas</b> - The canvas object to operate on.</p>
-		
-		<p>The link and canvas elements are just wiring variables. The links to what you what the animation to draw and the canvas to draw it on.</p>
-		
-		<p><b>adjustForGhostLines</b> - Overdraw each tile by 1px.</br>
-		<b>finished</b> - A function to be called when the animation is complete</p>
-		
-		<p>The adjustForGhostLines property is an unfortunate requirement for some browsers. Some browsers will round off rendering of the tiles creating lines between the tiles. This gives the animation an ugly look. By overdrawing each animation by 1px, we can remove the lines and it looks better. Unfortunately, this still creates a small visual distortion at the end when the animation is done. The finished variable is self-explanatory.</p>
+&lt;script type="text/javascript"&gt;	
+ var Gallery = {
+	textHeader : false, 
+	values : [{
+			image  : 'Images/01.jpg', // Needs to be a valid image path
+			effect : 'checkers',
+			text   : 'Checkers Effect'
+		},
+		{
+			image  : 'Images/02.jpg',
+			effect : 'fadeoutcenter',
+			text   : 'Fade Out Center Effect'
+		}]};
+
+ window.onload = function() {
+	// canvasDiv must be the id of the div where we want to create the gallery
+	SquarePresets.createGallery('canvasDiv', Gallery);
+ }
+&lt;/script&gt;</pre>
 	</div>
 	
-	<h2 class="center_div">Future Work</h2>
+	<h3>Creating an Animation</h3>
+	
+	To create a new Animation, simply do: 
+	<div class="code">new Squares.Animation(&lt;initialization_object&gt;)</div>
+	An animation will start animating immediately after being created. The squares gallery has a bunch of preset initialization objects to create. If you want to create your own initialization object, there are the important parameters to send:
+	
+	<ul class="list">
+		<li><span class="list_identifier">rows</span> -  The number of rows in the animation.</li>
+		<li><span class="list_identifier">cols</span> -  The number of columns in the animation.</li>
+		<li><span class="list_identifier">growDirection</span> -  Determine how to generate the 2D matrix to be processed by the algorithm. The types of directions are horizontal, vertical, diagonal, and checker.<span class="footnote">1</span></li>
+		<li><span class="list_identifier">squareSteps</span> -  The amount of frames each tile animation goes through before completion.</li>
+		<li><span class="list_identifier">growDelay</span> -  The amount of frames to delay before "growing" the next stage of the overall animation</li>
+		<li><span class="list_identifier">growFactor</span> -  Determine how to add new tiles for each new row. For example, we can add them one at a time (linear), all at once (row), from the outside in (centerin), or from the inside out (centerout).</li>
+		<li><span class="list_identifier">growType</span> -  Determine how to add each new row. The linear, centerin, and centerout options are the same as growFactor. We also have random and all.<span class="footnote">2</span></li>
+		<li><span class="list_identifier">effects</span> -  Pass in an array of effects to be applied to each tile as it is drawn. The current effects are FadingEffect, GrowingEffect, ZoomingEffect, FlashingEffect, and RotatingEffect.<span class="footnote">3</span></li>
+		<li><span class="list_identifier">link</span> -  The url to load the image for the animation from. If passed in as an array - it will assume it is a video.</li>
+		<li><span class="list_identifier">canvas</span> - The canvas object to operate on.</li>
+		<li><span class="list_identifier">adjustForGhostLines</span> - Overdraw each tile by 1px vertically.<span class="footnote">4</span></li>
+		<li><span class="list_identifier">finished</span> - A function to be called when the animation is complete.</li>
+	</ul>
+		
+		<p><span class="footnote_id">1</span> - The number of rows and the number of columns are really important in terms of the <span class="emphasize">GrowDirection</span>. Depending on which one these you pick, the algorithm will generate a 2D Matrix (called positions) of to be processed. For example, if you pick horizontal, each array in the matrix will be a row, while if you pick diagonal, each array in the matrix will be a diagonal slice of tiles. When I refer to a "row" further in this guide, I mean a row in the positions matrix.</p>
+	
+		<p><span class="footnote_id">2</span> - By changing the squareSteps, growDelay, growFactor, and growType, we have a large amount of flexibility in how the positions matrix is drawn to the screen throughout the animation. Note, there is no random value for growFactor, but there is a special case combining growFactor.linear and growType.random which will randomly draw the individual tiles in the positions matrix.</p>
+			
+		<p><span class="footnote_id">3</span> - These effects work as transforms on each tile as it is drawn. Since they work that way, they can all be combined. Some of the effects have further options - such as how many rotations we want to do for rotatingEffect or what direction to zoom in for ZoomingEffect.</p>
+		
+		<p><span class="footnote_id">4</span> - The adjustForGhostLines property is an unfortunate requirement for some browsers. Some browsers will round off rendering of the tiles creating lines between the tiles. This gives the animation an ugly look. By overdrawing each animation by 1px vertically, we can remove some of the lines and it looks better. Unfortunately, this still creates a small visual distortion at the end when the animation is done.</p>
+	
+	<h3>Creating an Effect</h3>
+	
+	<p>This section is a work in progress...</p>
+	
+	<h3>Video Support</h3>
+	
+	<p>The project has <i>some</i> light video support. Unfortunately the performance for videos is rather poor. If you are interested in using this project for videos, feel free to contact me and we can go over it.</p>
+	
+	</div>
+	<hr>
+	<h2 class="center_div">Future Improvements</h2>
 	
 	<div class="text_block">
-		<p><b>Accurate timing of animations</b> - Currently there are no options for precise timing. I found that using window.requestAnimationFrame to 
-		draw the animation significantly improved performance over trying to set a timeout myself. To have accurate timing, a function to determine the amount of steps in an animation is required, a self-adjusting timer would need to be created to adjust the delay in the timeout calls, and a significant amount of optimization would need to be done to allow for a smooth animation.<br/><br/>
-		
-		<b>More effects</b> - Would definitely be interested in any ideas here.<br/><br/>
-		
-		<b>Performance optimization and code cleanup</b> - I'm sure the javascript could be written better.</p>
-		<br/><br/><br/><br/>
+		<p><h3>Accurate timing of animations</h3>
+		Currently there are no options for precise timing. There is a decent amount of work and testing to be done here.
+		<h3>More effects</h3>
+		There are a huge amount of possible effects. For example, someone could implement an effect that interpolates between greyscale and the final color for each tile. There are also a lot of cool possible combinations of the existing effects that haven't been explored.
+		<h3>Mobile friendly version</h3>
+		A version where we can swipe (or click on the left/right sides of) the canvas to cycle between animations.
+		<h3>Performance optimization/Code cleanup/Bug squashing</h3>
+		Code is never perfect.</p>
+		<br><br>
 	</div>
 	
  </BODY>

@@ -1,17 +1,17 @@
 ;var Squares = (function(window, document) {
 	"use strict";
 	
-	//Utility classes
+	// Utility classes
 	var ArrayUtils = (function() {
-		//Remove elements in array [from, to]
+		// Remove elements in array [from, to]
 		function remove(array, from, to) {
 			var rest = array.slice((to || from) + 1 || array.length);
 			array.length = from < 0 ? array.length + from : from;
 			return array.push.apply(array, rest);
 		}
 		
-		//Pop a random element in a 1D array
-		//Destructive
+		// Pop a random element in a 1D array
+		// Destructive
 		function randomEle(array) {
 			var pos = Math.floor(Math.random() * array.length);
 			var val = array[pos];
@@ -19,15 +19,15 @@
 			return val;
 		}
 		
-		//Pop a random element in a Matrix (2D array)
-		//Destructive
+		// Pop a random element in a Matrix (2D array)
+		// Destructive
 		function randomEle2D(array) {
 			var rPos = Math.floor(Math.random() * array.length);
 			var row = array[rPos];
 			var pos = Math.floor(Math.random() * row.length);
 			var val = row[pos];
 			remove(row, pos);
-			if(row.length == 0) {
+			if(row.length === 0) {
 				remove(array, rPos);
 			}
 			return val;
@@ -37,11 +37,11 @@
 			remove : remove,
 			randomEle : randomEle,
 			randomEle2D : randomEle2D
-		}	
+		};
 	})();
 
 	var SquareUtils = (function() {
-		//Return the size of the window
+		// Return the size of the window
 		function getWindowSize() {
 			var winW = 600;
 			var winH = 400;
@@ -59,16 +59,16 @@
 			 winW = window.innerWidth;
 			 winH = window.innerHeight;
 			}
-			var minTest = Math.floor(winW * .66);
-			if(minTest < 400) { //minimum values
+			var minTest = Math.floor(winW * 0.66);
+			if(minTest < 400) { // minimum values
 				winW = 600;
 				winH = 400;
 			}
 			return [winW, winH];
 		}
 	
-		//Pass in the nubmer of rows desired and the size of the canvas
-		//Returns the number of cols and rows to pass in to get squares (first number is cols, second is rows)
+		// Pass in the nubmer of rows desired and the size of the canvas
+		// Returns the number of cols and rows to pass in to get squares (first number is cols, second is rows)
 		function getSquareRatio(num, width, height) {
 			return [Math.round(num * width/height), num];
 		}
@@ -76,13 +76,14 @@
 		return {
 			getWindowSize : getWindowSize,
 			getSquareRatio : getSquareRatio
-		}
+		};
 	})();
 
 	function merge(obj1,obj2){
 		var obj3 = {};
-		for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-		for (var attrname in obj2) { if(obj2[attrname] != undefined) obj3[attrname] = obj2[attrname]; }
+		var attrname;
+		for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+		for (attrname in obj2) { if(obj2[attrname] !== undefined) obj3[attrname] = obj2[attrname]; }
 		return obj3;
 	}
 	
@@ -96,20 +97,23 @@
 		return arr;
 	}
 
-	//CONSTANTS
+	/***************************
+	* CONSTANTS
+	****************************/
 	var TO_RADIANS = Math.PI/180;
-	//requestAnimationFrame
+	var GHOST_LINE_ADJUSTMENT = 1;
+	// requestAnimationFrame
 	var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
 								window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-	//Direction from which pieces zoom in from.
-	//random means a random direction, random2 means random anywhere off the screen
-	var ZoomDirection = { left: 1, top: 2, right: 3, bottom: 4, random: 5, random2: 6 }
-	//Growth animation functions (horizontal, vertical, diagonal, mixed with linear, row, grow-out and also linear, centerout, centerin, and random)
-	//Special combinations: random linear always does the same thing, random and anything else always draw random row in shift
+	// Direction from which pieces zoom in from.
+	// random means a random direction, random2 means random anywhere off the screen
+	var ZoomDirection = { left: 1, top: 2, right: 3, bottom: 4, random: 5, random2: 6 };
+	// Growth animation functions (horizontal, vertical, diagonal, mixed with linear, row, grow-out and also linear, centerout, centerin, and random)
+	// Special combinations: random linear always does the same thing, random and anything else always draw random row in shift
 	var GrowDirection = { horizontal: 1, vertical: 2, diagonal: 3, checker: 4 };
 	var GrowFactor = { linear: 1, row: 2, centerout: 3, centerin: 4};
 	var GrowType = { linear: 1, centerout: 2, centerin: 3, all: 4, random: 5};
-	//Animation default parameters
+	// Animation default parameters
 	var AnimDefaults = {
 		canvas : undefined,
 		link : undefined, 
@@ -122,10 +126,12 @@
 		growType : GrowType.linear,
 		effects : [],
 		finished : function() {}
-	}
+	};
+	/***************************
+	* END CONSTANTS
+	****************************/
 
-
-	//Square animation functions
+	// Square animation functions
 	function SquareAnimation(parent, r, c) {
 		this.parent = parent;
 		this.r = r;
@@ -145,12 +151,12 @@
 		this.cSizeX = this.parent.adjustedcX;
 		this.cSizeY = this.parent.adjustedcY;
 	
-		//Special flags
+		// Special flags
 		this.flashing = false;
 		this.parent.context.globalAlpha = 1.0;
-	}
+	};
 
-	//Swap out save and restore with reverse context operations to save computation
+	// Swap out save and restore with reverse context operations to save computation
 	SquareAnimation.prototype.draw = function() {
 		this.parent.context.save(); 
 		if(this.rotation) {
@@ -169,7 +175,7 @@
 				this.cCornerX, this.cCornerY, this.cSizeX, this.cSizeY);
 		}
 		this.parent.context.restore();
-	}
+	};
 
 	function GrowingEffect() {
 		var parent = this;
@@ -181,14 +187,14 @@
 			this.cCornerY += ((parent.cY - cySize)/2);
 			this.cSizeX = cxSize;
 			this.cSizeY = cySize;
-		}
+		};
 	}
 
 	function FadingEffect() {
 		var parent = this;
 		return function() {
 			parent.context.globalAlpha = this.currentStep/this.steps;
-		}
+		};
 	}
 
 	function FlashingEffect(delay) {
@@ -197,10 +203,10 @@
 			if(this.currentStep >= this.steps) {
 				this.flashing = false; 
 			}
-			else if(this.currentStep % delay == 0) {
+			else if(this.currentStep % delay === 0) {
 				this.flashing = !(this.flashing);
 			}
-		}
+		};
 	}
 
 	function RotatingEffect(rotations) {
@@ -208,13 +214,14 @@
 		var angleTurn = rotations * 360 / parent.squareAnimationSteps;
 		return function() {
 			this.rotation = (angleTurn * this.currentStep) * TO_RADIANS;
-		}
+		};
 	}
 
 	function ZoomingEffect(growth) {
 		var parent = this;
 		return function() {
-			if(this.startX == undefined) { //initialize inner variables if they have not been
+			if(this.startX === undefined) { // Initialize inner variables if they have not been
+				var rand;
 				switch(growth) {
 					case ZoomDirection.left:
 						this.startX = parent.cX * -1;
@@ -223,13 +230,13 @@
 						this.startX = parent.cwidth + parent.cX;
 						break;
 					case ZoomDirection.random:
-						var rand = Math.random();
+					    rand = Math.random();
 						if(rand <= 0.33) this.startX = 0;
 						else if(rand <= 0.66) this.startX = parent.cX * -1;
 						else this.startX = parent.cwidth + parent.cX;
 						break;
 					case ZoomDirection.random2:
-						var rand = Math.random();
+					    rand = Math.random();
 						var rand2 = Math.random();
 						var xchosen = false;
 						if(rand > 0.5) {
@@ -251,7 +258,7 @@
 						this.startY = parent.cheight + parent.cY;
 						break;
 					case ZoomDirection.random:
-						if(this.startX == 0) {
+						if(this.startX === 0) {
 							if(Math.random() > 0.5) this.startY = parent.cY * -1;
 							else this.startY = parent.cheight + parent.cY;
 						} else this.startY = 0;
@@ -271,30 +278,30 @@
 			}
 			var ratio = Math.min(1.0, (this.currentStep + 1)/this.steps);
 			var invRatio = 1.0 - ratio;
-			this.cCornerX = this.startX == 0 ? this.cCornerX : this.startX * invRatio + this.cCornerX * ratio;
-			this.cCornerY = this.startY == 0 ? this.cCornerY : this.startY * invRatio + this.cCornerY * ratio;
-		}	
+			this.cCornerX = this.startX === 0 ? this.cCornerX : this.startX * invRatio + this.cCornerX * ratio;
+			this.cCornerY = this.startY === 0 ? this.cCornerY : this.startY * invRatio + this.cCornerY * ratio;
+		};
 	}
 
-	//The Animation class
+	// The Animation class
 	var Animation = function(options) {
 		var that = this;
-		this.options = options; //save options for possibly passing on
+		this.options = options; // Save options for possibly passing on
 		options = merge(AnimDefaults, options);
 		this.context = options.canvas.getContext('2d');
 	
-		//If we pass in a src array it is a video
+		// If we pass in a src array it is a video
 		this.isVideo = Object.prototype.toString.call( options.link ) === '[object Array]';
 		this.refresh = true;
 		
-		//Preserve current canvas to be redrawn as background
+		// Preserve current canvas to be redrawn as background
 		this.backCanvas = document.createElement('canvas');
 		this.backCanvas.setAttribute('width', options.canvas.width);
 		this.backCanvas.setAttribute('height', options.canvas.height);
 		var backContext = this.backCanvas.getContext('2d');
 		backContext.drawImage(options.canvas, 0, 0, options.canvas.width, options.canvas.height);
 	
-		//Handle video passed in
+		// Handle video passed in
 		if(this.isVideo) {
 			this.video = document.createElement('video');
 			this.video.setAttribute('style','display:none;');
@@ -328,12 +335,12 @@
 		this.cX = this.cwidth/options.cols;
 		this.cY = this.cheight/options.rows;
 		
-		//This is a hack to get around mozilla/safari not drawing exact pixel boundaries and leaving ghost lines...
-		//However, this causes a slight shake in the picture when it is fully loaded...
-		//Currently we just add 1 pixel to the box we draw on the canvas, possibly a better way to do this?
-		if(options.adjustForGhostLines == true) {
-			this.adjustedcX = this.cX + 1;
-			this.adjustedcY = this.cY + 1;
+		// This is a hack to get around mozilla/safari not drawing exact pixel boundaries and leaving ghost lines...
+		// However, this causes a slight shake in the picture when it is fully loaded...
+		// Currently we just add 1 pixel to the box we draw on the canvas, possibly a better way to do this?
+		if(options.adjustForGhostLines === true) {
+			this.adjustedcX = this.cX;
+			this.adjustedcY = this.cY + GHOST_LINE_ADJUSTMENT;
 		} else {
 			this.adjustedcX = this.cX;
 			this.adjustedcY = this.cY;
@@ -343,19 +350,20 @@
 		this.rowCount = options.rows;
 		this.buffer = [];
 		this.rows = [];
-		this.posfinished = false; //signify we have exhausted all elements in the position array
-		this.bufrunning = true; //signify all animations in the buffer have not completed and the buffer is still running
+		this.posfinished = false; // Signify we have exhausted all elements in the position array
+		this.bufrunning = true; // Signify all animations in the buffer have not completed and the buffer is still running
 	
-		this.squareAnimationSteps = options.squareSteps; //Number of steps each square animation takes to finish
-		this.growDelay = options.growDelay; //The delay in steps before growing the next batch of squares
+		this.squareAnimationSteps = options.squareSteps; // Number of steps each square animation takes to finish
+		this.growDelay = options.growDelay; // The delay in steps before growing the next batch of squares
 		this.growStep = 0;
 	
 		this.gdirection = options.growDirection;
 		this.gfactor = options.growFactor;
 		this.gtype = options.growType;
 		var effects = [];
-		options.effects = deepCopyArray(options.effects); //Deep copy to be non-destructive to original input
-		for(var i = 0; i < options.effects.length; i++) {
+		var i = 0;
+		options.effects = deepCopyArray(options.effects); // Deep copy to be non-destructive to original input
+		for(i = 0; i < options.effects.length; i++) {
 			var effect = options.effects[i];
 			var gfn = effect.shift();
 			effects.push(gfn.apply(that,effect));
@@ -365,8 +373,8 @@
 		this.initPos();
 	
 		if(this.isVideo) {
-			for(var i = 0; i < options.link.length; i++) {
-				//Hack for firefox - Do not add mp4 type if we cannot play it
+			for(i = 0; i < options.link.length; i++) {
+				// Hack for firefox - Do not add mp4 type if we cannot play it
 			   var canPlayMP4 = this.video.canPlayType && this.video.canPlayType('video/mp4').replace(/no/, '');
 				if(!(options.link[i].indexOf(".mp4") != -1 && !canPlayMP4)) {
 					var source = document.createElement('source');
@@ -377,17 +385,17 @@
 		} else {
 			this.img.src = options.link;
 		}
-	}
+	};
 
 	Animation.prototype.drawVideo = function(v,buffer) {
 		if(buffer.stopped) v.pause();
 		if(v.paused || v.ended) return false;
 		buffer.videoContext.drawImage(v,0,0,buffer.videoCanvas.width,buffer.videoCanvas.height);
 		setTimeout(buffer.drawVideo,60,v,buffer);
-	}
+	};
 
-	//For video have secondary buffer that elements get placed in after removed and drawn as well
-	//Possibly have another canvas and double buffer as well
+	// For video have secondary buffer that elements get placed in after removed and drawn as well
+	// Possibly have another canvas and double buffer as well
 	Animation.prototype.drawBuffer = function() {
 		if(this.refresh) this.context.drawImage(this.backCanvas, 0, 0, this.cwidth, this.cheight);
 		this.bufrunning = false;
@@ -403,31 +411,35 @@
 				this.bufrunning = true;
 			}
 		}
-	}
+	};
 
 	Animation.prototype.push = function(anim) {
 		this.buffer.push(anim);
-	}
+	};
 
 	Animation.prototype.stop = function() {
 		this.stopped = true;
-	}
+	};
 	
 	Animation.prototype.stopAndDraw = function() {
 		this.drawOnStop = true;
 		this.stopped = true;
-	}
+	};
+	
+	Animation.prototype.setFinished = function(func) {
+		this.finished = func;
+	};
 
-	//Use this to generate all the positions to be drawn up
-	//Initializes a 2-d buffer of all the squares to draw
-	//We can then calculate rows, random, and different growth strategies using these precomputed values
+	// Use this to generate all the positions to be drawn up
+	// Initializes a 2-d buffer of all the squares to draw
+	// We can then calculate rows, random, and different growth strategies using these precomputed values
 	Animation.prototype.initPos = function() {
 		var positions = [];
-		var i, j;
+		var i, j, inner, z1, z2;
 		switch(this.gdirection) {
 			case GrowDirection.horizontal:
 				for(i = 0; i < this.rowCount; i++) {
-					var inner = [];
+					inner = [];
 					for(j = 0; j < this.colCount; j++) {
 						inner.push([j, i]);
 					}
@@ -436,7 +448,7 @@
 				break;
 			case GrowDirection.vertical:
 				for(i = 0; i < this.colCount; i++) {
-					var inner = [];
+					inner = [];
 					for(j = 0; j < this.rowCount; j++) {
 						inner.push([i, j]);
 					}
@@ -445,9 +457,9 @@
 				break;
 			case GrowDirection.diagonal:
 				for(i = 0; i < this.colCount + this.rowCount - 1; i++) {
-					var z1 = i < this.rowCount ? 0 : i - this.rowCount + 1;
-					var z2 = i < this.colCount ? 0 : i - this.colCount + 1;
-					var inner = [];
+					z1 = i < this.rowCount ? 0 : i - this.rowCount + 1;
+					z2 = i < this.colCount ? 0 : i - this.colCount + 1;
+					inner = [];
 					for (j = i - z2; j >= z1; --j) {
 						inner.push([j, i - j]);
 					}
@@ -456,9 +468,9 @@
 				break;
 			case GrowDirection.checker:
 			for(i = 0; i < this.colCount + this.rowCount - 1; i++) {
-				var z1 = i < this.rowCount ? 0 : i - this.rowCount + 1;
-				var z2 = i < this.colCount ? 0 : i - this.colCount + 1;
-				var inner = [];
+				z1 = i < this.rowCount ? 0 : i - this.rowCount + 1;
+				z2 = i < this.colCount ? 0 : i - this.colCount + 1;
+				inner = [];
 				for (j = i - z2; j >= z1; --j) {
 					inner.push([j, i - j]);
 				}
@@ -469,18 +481,18 @@
 		}
 
 		this.positions = positions;
-	}
+	};
 
-	//Shifts to the next row if necessary. Returns false if all rows have been consumed 
+	// Shifts to the next row if necessary. Returns false if all rows have been consumed 
 	Animation.prototype.getRows = function() {
-		if(this.rows.length == 0) {
-			if(this.positions.length == 0) {
+		if(this.rows.length === 0) {
+			if(this.positions.length === 0) {
 				this.posfinished = true;
-				return false; //all positions are consumed
+				return false; // All positions are consumed
 			}
-		} else return true; //continue current row if still going
+		} else return true; // Continue current row if still going
 	
-		switch(this.gtype) { //populate new rows
+		switch(this.gtype) { // Populate new rows
 			case GrowType.centerin:
 				this.rows.push(this.positions.shift());
 				if(this.positions.length > 0) {
@@ -502,18 +514,18 @@
 				this.rows = this.positions;
 				this.postions = [];
 				break;
-			default: //gtype linear and random
+			default: // Gtype linear and random
 				this.rows[0] = this.gtype == GrowType.random ? ArrayUtils.randomEle(this.positions) : this.positions.shift();
 		}
 		return true;
-	}
+	};
 
-	//Pass in the position 
+	// Pass in the position 
 	Animation.prototype.pushSquareToBuffer = function(pos) {
 		var sAnim = new SquareAnimation(this, pos[0], pos[1]);
 		sAnim.populate();
 		this.push(sAnim);	
-	}
+	};
 
 	Animation.prototype.grow = function() {
 		var buffer = this;
@@ -539,6 +551,7 @@
 						case 1:
 							var pos = element.shift();
 							buffer.pushSquareToBuffer(pos);
+							break;
 						case 0: 
 							ArrayUtils.remove(array, index);
 							break;
@@ -559,6 +572,7 @@
 					switch(element.length) {
 						case 1:
 							buffer.pushSquareToBuffer(element.pop());
+							break;
 						case 0: 
 							ArrayUtils.remove(array, index);
 							break;
@@ -569,9 +583,9 @@
 
 				break;
 			case GrowFactor.linear:
-				if(this.gtype == GrowType.random) { //handle special case of linear and random
+				if(this.gtype == GrowType.random) { // Handle special case of linear and random
 					this.pushSquareToBuffer(ArrayUtils.randomEle2D(this.positions));
-					if(this.positions.length == 0) {
+					if(this.positions.length === 0) {
 						this.posfinished = true;
 					}
 				} else {
@@ -585,7 +599,7 @@
 					});
 				}
 		}	
-	}
+	};
 	
 	Animation.prototype.drawImageAnim = function() {
 		if(!this.stopped) {
@@ -599,7 +613,7 @@
 			if(!this.posfinished || this.bufrunning) {
 				requestAnimationFrame(that.drawImageAnim.bind(that));
 			} else {
-				//Redraw the whole picture in case of ghost lines
+				// Redraw the whole picture in case of ghost lines
 				this.context.drawImage(this.img, 0, 0, this.cX * this.colCount, this.cY * this.rowCount);
 				if(this.isVideo && !this.video.paused) {
 					requestAnimationFrame(that.drawImageAnim.bind(that));
@@ -613,23 +627,23 @@
 			}
 			this.finished();
 		}
-	}
+	};
 
 	return {
-		//Classes
+		// Classes
 		Animation : Animation,
 		SquareUtils : SquareUtils,
-		//Constants
+		// Constants
 		ZoomDirection : ZoomDirection,
 		GrowDirection : GrowDirection,
 		GrowFactor : GrowFactor,
 		GrowType : GrowType,
-		//Effect functions
+		// Effect functions
 		GrowingEffect : GrowingEffect,
 		FadingEffect : FadingEffect,
 		FlashingEffect : FlashingEffect,
 		RotatingEffect : RotatingEffect,
 		ZoomingEffect : ZoomingEffect
-	}
+	};
 	
 })(window, document);

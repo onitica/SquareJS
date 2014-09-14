@@ -1,10 +1,8 @@
 body, html {
-   height: 100%;
-   width: 100%;
-   margin: 0px;
-   background-image: url("../Images/bg.png"); 
-   background-position: initial initial; 
-   background-repeat: initial initial;
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	bakground: white;
 }
 
 .center_div {
@@ -16,4 +14,39 @@ body, html {
 	width:800px;
 	float:center;
 	margin:0px auto;
+}
+
+.list li {
+	margin-top: 3px;
+}
+
+.list_identifier {
+	font-weight: bold;
+}
+
+.footnote {
+	font-weight: bold;
+	position: relative;
+	bottom: 0.5em;
+	font-size: 0.8em;
+}
+
+.footnote_id {
+	font-weight: bold;
+}
+
+.emphasize {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.code {
+	display:block;
+	width: 100%;
+	background: #FFFFEE;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	margin: 10px;
+	font-family: monospace;
 }
