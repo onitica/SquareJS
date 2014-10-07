@@ -101,7 +101,6 @@
 	* CONSTANTS
 	****************************/
 	var TO_RADIANS = Math.PI/180;
-	var GHOST_LINE_ADJUSTMENT = 1;
 	// requestAnimationFrame
 	var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
 								window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -148,8 +147,8 @@
 		this.iSizeY = this.parent.iY;
 		this.cCornerX = this.parent.cX * this.r;
 		this.cCornerY = this.parent.cY * this.c;
-		this.cSizeX = this.parent.adjustedcX;
-		this.cSizeY = this.parent.adjustedcY;
+		this.cSizeX = this.parent.cX;
+		this.cSizeY = this.parent.cY;
 	
 		// Special flags
 		this.flashing = false;
@@ -332,18 +331,15 @@
 		this.finished = options.finished;
 		this.cwidth = options.canvas.width;
 		this.cheight = options.canvas.height;
-		this.cX = this.cwidth/options.cols;
-		this.cY = this.cheight/options.rows;
-		
-		// This is a hack to get around mozilla/safari not drawing exact pixel boundaries and leaving ghost lines...
-		// However, this causes a slight shake in the picture when it is fully loaded...
-		// Currently we just add 1 pixel to the box we draw on the canvas, possibly a better way to do this?
+
+		// Chrome renders this correctly, but for safari and firefox we need to round the squares up to prevent 
+		// ghost lines appearing between the squares
 		if(options.adjustForGhostLines === true) {
-			this.adjustedcX = this.cX;
-			this.adjustedcY = this.cY + GHOST_LINE_ADJUSTMENT;
+			this.cX = Math.round((this.cwidth/options.cols) + 0.49);
+			this.cY = Math.round((this.cheight/options.rows) + 0.49);
 		} else {
-			this.adjustedcX = this.cX;
-			this.adjustedcY = this.cY;
+			this.cX = this.cwidth/options.cols;
+			this.cY = this.cheight/options.rows;
 		}
 		
 		this.colCount = options.cols;
@@ -613,8 +609,6 @@
 			if(!this.posfinished || this.bufrunning) {
 				requestAnimationFrame(that.drawImageAnim.bind(that));
 			} else {
-				// Redraw the whole picture in case of ghost lines
-				this.context.drawImage(this.img, 0, 0, this.cX * this.colCount, this.cY * this.rowCount);
 				if(this.isVideo && !this.video.paused) {
 					requestAnimationFrame(that.drawImageAnim.bind(that));
 				} else {
